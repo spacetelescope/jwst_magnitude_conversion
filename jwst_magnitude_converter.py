@@ -46,7 +46,7 @@ elif sys.version_info[0] == 3:
 
 sectionlist=['Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Output_Filter_Values','Output_Filter_Values','Output_Filter_Values','Output_Filter_Values','Output_Filter_Values']
 keylist=['filter1','filter2','column1','column2','column1type','column2type','yvalue','datafile','racolumn','deccolumn','niriss1','niriss2','modelset','fitorder','outfilename']
-# path='/Users/kvolk/work/ntfi/magnitude_converter/newpackage/'
+
 path = os.path.dirname(__file__)
 kuruczfilternames=["Sloan u  ","Sloan g  ","Sloan r  ","Sloan i  ",
 "Sloan z  ","Bessel U  ","Bessel B  ","Bessel V  ",
@@ -1127,7 +1127,7 @@ def main(argv):
     root=None
     x=magConGUI()
     x.autoTransform(parameters)
-    sys.exit()
+    # sys.exit()
       
 if __name__ == "__main__":
   main(sys.argv)
