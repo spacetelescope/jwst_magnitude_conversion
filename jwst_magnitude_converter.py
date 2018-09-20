@@ -3,7 +3,8 @@
 """
 This python program is for reading in a set of observed magnitude/colour 
 values and converting them to expected JWST magnitudes.  The conversion 
-is based on simulated stellar colours from magnitudes.py.
+is based on simulated stellar colours from magnitudes.py.  One can also 
+transform from one JWST instrument magnitude to another.
 
 To use the code non-interactively one has to specify parameters in a configobj
 file.  See the example file hst_to_nis.cfg for an example.  The magnitude 
@@ -28,7 +29,6 @@ import astropy.io.fits as fits
 from configobj import ConfigObj
 import sys, os
 
-
 if sys.version_info[0] == 2:
     import Tkinter as Tk
     import ttk 
@@ -43,9 +43,6 @@ elif sys.version_info[0] == 3:
     import tkinter.filedialog as tkFileDialog
     from tkinter.messagebox import Message as tkMessageBox
     from tkinter.colorchooser import Chooser as tkColorChooser
-
-sectionlist=['Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Output_Filter_Values','Output_Filter_Values','Output_Filter_Values','Output_Filter_Values','Output_Filter_Values']
-keylist=['filter1','filter2','column1','column2','column1type','column2type','yvalue','datafile','racolumn','deccolumn','niriss1','niriss2','modelset','fitorder','outfilename']
 
 path = os.path.dirname(__file__)
 kuruczfilternames=["Sloan u  ","Sloan g  ","Sloan r  ","Sloan i  ",
@@ -68,8 +65,47 @@ kuruczfilternames=["Sloan u  ","Sloan g  ","Sloan r  ","Sloan i  ",
 "HST WFC3 F438W ","HST WFC3 F475W ","HST WFC3 F555W ","HST WFC3 F606W ",
 "HST WFC3 F625W ","HST WFC3 F775W ","HST WFC3 F814W ","HST WFC3 F105W ",
 "HST WFC3 F110W ","HST WFC3 F125W ","HST WFC3 F140W ","HST WFC3 F160W ",
-"GAIA g","GAIA gbp","GAIA grp"]
-phoenixfilternames=['Sloan u ','Sloan g ','Sloan r ','Sloan i ','Sloan z ','Bessel U ','Bessel B ','Bessel V ','Bessel/Cousins R ','Bessel/Cousins I ','Johnson U ','Johnson B ','Johnson V ','Johnson R ','Johnson I ','Johnson J ','Johnson H ','Johnson K ','Johnson L ','2MASS J ','2MASS H ','2MASS Ks ','IRAC [3.6] ','IRAC [4.4] ','DENIS i ','DENIS J ','DENIS Ks ','WISE W1 ','WISE W2 ','UKIDSS Z ','UKIDSS Y ','UKIDSS J ','UKIDSS H ','UKIDSS K ','Pan-STARRS1 g ','Pan-STARRS1 r ','Pan-STARRS1 i ','Pan-STARRS1 z ','Pan-STARRS1 y ','Pan-STARRS1 w ','HST ACS F220W ','HST ACS F250W ','HST ACS F330W ','HST ACS F435W ','HST ACS F475W ','HST ACS F555W ','HST ACS F606W ','HST ACS F625W ','HST ACS F775W ','HST ACS F814W ','HST WFC3 F218W ','HST WFC3 F225W ','HST WFC3 F275W ','HST WFC3 F336W ','HST WFC3 F390W ','HST WFC3 F438W ','HST WFC3 F475W ','HST WFC3 F555W ','HST WFC3 F606W ','HST WFC3 F625W ','HST WFC3 F775W ','HST WFC3 F814W ','HST WFC3 F105W ','HST WFC3 F110W ','HST WFC3 F125W ','HST WFC3 F140W ','HST WFC3 F160W ','GAIA g','GAIA gbp','GAIA grp']
+"GAIA g","GAIA gbp","GAIA grp",
+"NIRCam F070W ","NIRCam F090W ","NIRCam F115W ","NIRCam F140M ",
+"NIRCam F150W ","NIRCam F150W2 ","NIRCam F162M ","NIRCam F164N ",
+"NIRCam F182M ","NIRCam F187M ","NIRCam F200W ","NIRCam F210M ",
+"NIRCam F212N ","NIRCam F250M ","NIRCam F277W ","NIRCam F300M ",
+"NIRCam F322W2 ","NIRCam F323N ","NIRCam F335M ","NIRCam F356W ",
+"NIRCam F360M ","NIRCam F405N ","NIRCam F410M ","NIRCam F430M ",
+"NIRCam F444W ","NIRCam F460M ","NIRCam F466N ","NIRCam F470N ",
+"NIRCam F480M ","MIRI F560W ","MIRI F770W ","MIRI F1000W ",
+"MIRI F1280W ","MIRI F1130W ","MIRI F1500W ","MIRI F1800W ",
+"MIRI F2100W ","MIRI F2550W ",'NIRSpec F110W','NIRSpec F140X',
+'NIRSpec Clear','NIRSpec F070LP','NIRSec F100LP','NIRSpec F170LP',
+'NIRSPec F290LP','Guider 1','Guider 2']
+phoenixfilternames=['Sloan u ','Sloan g ','Sloan r ','Sloan i ','Sloan z ',
+'Bessel U ','Bessel B ','Bessel V ','Bessel/Cousins R ','Bessel/Cousins I ',
+'Johnson U ','Johnson B ','Johnson V ','Johnson R ','Johnson I ','Johnson J ',
+'Johnson H ','Johnson K ','Johnson L ','2MASS J ','2MASS H ','2MASS Ks ',
+'IRAC [3.6] ','IRAC [4.4] ','DENIS i ','DENIS J ','DENIS Ks ','WISE W1 ',
+'WISE W2 ','UKIDSS Z ','UKIDSS Y ','UKIDSS J ','UKIDSS H ','UKIDSS K ',
+'Pan-STARRS1 g ','Pan-STARRS1 r ','Pan-STARRS1 i ','Pan-STARRS1 z ',
+'Pan-STARRS1 y ','Pan-STARRS1 w ','HST ACS F220W ','HST ACS F250W ',
+"GAIA g","GAIA gbp","GAIA grp",
+'HST ACS F330W ','HST ACS F435W ','HST ACS F475W ','HST ACS F555W ',
+'HST ACS F606W ','HST ACS F625W ','HST ACS F775W ','HST ACS F814W ',
+'HST WFC3 F218W ','HST WFC3 F225W ','HST WFC3 F275W ','HST WFC3 F336W ',
+'HST WFC3 F390W ','HST WFC3 F438W ','HST WFC3 F475W ','HST WFC3 F555W ',
+'HST WFC3 F606W ','HST WFC3 F625W ','HST WFC3 F775W ','HST WFC3 F814W ',
+'HST WFC3 F105W ','HST WFC3 F110W ','HST WFC3 F125W ','HST WFC3 F140W ',
+'HST WFC3 F160W '
+"NIRCam F070W ","NIRCam F090W ","NIRCam F115W ","NIRCam F140M ",
+"NIRCam F150W ","NIRCam F150W2 ","NIRCam F162M ","NIRCam F164N ",
+"NIRCam F182M ","NIRCam F187M ","NIRCam F200W ","NIRCam F210M ",
+"NIRCam F212N ","NIRCam F250M ","NIRCam F277W ","NIRCam F300M ",
+"NIRCam F322W2 ","NIRCam F323N ","NIRCam F335M ","NIRCam F356W ",
+"NIRCam F360M ","NIRCam F405N ","NIRCam F410M ","NIRCam F430M ",
+"NIRCam F444W ","NIRCam F460M ","NIRCam F466N ","NIRCam F470N ",
+"NIRCam F480M ","MIRI F560W ","MIRI F770W ","MIRI F1000W ",
+"MIRI F1280W ","MIRI F1130W ","MIRI F1500W ","MIRI F1800W ",
+"MIRI F2100W ","MIRI F2550W ",'NIRSpec F110W','NIRSpec F140X',
+'NIRSpec Clear','NIRSpec F070LP','NIRSec F100LP','NIRSpec F170LP',
+'NIRSPec F290LP','Guider 1','Guider 2']
 jwstnames=["NIRISS F090W ","NIRISS F115W ","NIRISS F140M ","NIRISS F150W ",
 "NIRISS F158M ","NIRISS F200W ","NIRISS F277W ","NIRISS F356W ",
 "NIRISS F380M ","NIRISS F430M ","NIRISS F444W ","NIRISS F480M ",
@@ -106,8 +142,9 @@ class magConGUI():
     self.plotLimits=numpy.zeros((4,3),dtype=numpy.float32)
 # for each plot, xmin, xmax, ymin, ymax data values saved here...
     self.dataLimits=numpy.zeros((4,3),dtype=numpy.float32)
-# self.fitResults will hold the fit parameters for from 1 to 52 JWST filters
-    self.fitResults=[None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None]
+# self.fitResults will hold the fit parameters for from 1 to 59 JWST filters for the
+# different instruments (12 NIRISS, 2 Guider, 29 NIRCam, 9 MIRI, 7 NIRSpec)
+    self.fitResults=[None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None]
 # self.fitRange holds the colour range of validity of the fitting
     self.fitRange=numpy.zeros((2),dtype=numpy.float32)
 
@@ -239,8 +276,10 @@ class magConGUI():
     mopt1.pack(side=Tk.LEFT)
     mopt2=Tk.Radiobutton(setFrame,text='Phoenix',variable=self.setOption,value=1,command=self.setLabels)
     mopt2.pack(side=Tk.LEFT)
-    mopt3=Tk.Radiobutton(setFrame,text='Blackbodies',variable=self.setOption,value=2,command=self.setLabels)
+    mopt3=Tk.Radiobutton(setFrame,text='BOSZ',variable=self.setOption,value=3,command=self.setLabels)
     mopt3.pack(side=Tk.LEFT)
+    mopt4=Tk.Radiobutton(setFrame,text='Blackbodies',variable=self.setOption,value=2,command=self.setLabels)
+    mopt4.pack(side=Tk.LEFT)
     l1=Tk.Frame(root)
     l1.pack()
     label1=Tk.Label(l1,text="Order of fit: ")
@@ -275,27 +314,29 @@ class magConGUI():
 # over to the second line.
 #
 #    status=self.readModelValues('magslist_old_kurucz.new','magslist_phoenix_grid.new','magslist_blackbody_fullrange.new')
-    status=self.readModelValues('magslist_old_kurucz.new','magslist_phoenix_grid.new','magslist_blackbody.new')
+    status=self.readModelValues('magslist_old_kurucz.new','magslist_phoenix_grid.new','magslist_blackbody.new','magslist_bosz_normal.new')
     if not status:
       self.putMessage('Error reading in the model magnitude values.  No transformations can be done.\n',self.messageText)
       self.haveModelMags=False
     else:
-      self.putMessage('Have read in the Kurucz, Phoenix, and blackbody \nmodel magnitude values.\n',self.messageText)
+      self.putMessage('Have read in the Kurucz, BOSZ, Phoenix, and blackbody \nmodel magnitude values.\n',self.messageText)
       self.haveModelMags=True
 
   def setLabels(self):
     setoption=self.setOption.get()
-    if setoption == 0 | setoption == 2:
-      self.mag1box['values']=kuruczfilternames
-      self.mag2box['values']=kuruczfilternames
     if setoption == 1:
       self.mag1box['values']=phoenixfilternames
       self.mag2box['values']=phoenixfilternames
+    else:
+      self.mag1box['values']=kuruczfilternames
+      self.mag2box['values']=kuruczfilternames
+    if self.haveModelMags and self.haveData:
+        self.doTransformation()
       
   def writeValues(self):
     if not self.haveData:
       return
-    outfilename=tkFileDialog.asksaveasfilename(filetypes=[('data files','*.data'),('data files','*.dat'),('data files','*.txt'),('All files','*')])
+    outfilename=tkFileDialog.asksaveasfilename(filetypes=[('data files','*.data'),('data files','*.dat'),('data files','*.txt'),('data files','*.tbl'),('All files','*')])
     if isinstance(outfilename,basestring):
       self.writeMags(outfilename)
 
@@ -308,7 +349,7 @@ class magConGUI():
     outfile=open(outfilename,'w')
     s1='# %s | %s ' % (self.xlabel[0],self.ylabel[0])
     nout=[]
-    for n in range(52):
+    for n in range(59):
       values=self.jwstMags[:,n]
       amin=numpy.min(values)
       amax=numpy.max(values)
@@ -330,12 +371,13 @@ class magConGUI():
       print(s1,file=outfile)
     outfile.close()
       
-  def readModelValues(self,filename1,filename2,filename3):
+  def readModelValues(self,filename1,filename2,filename3,filename4):
     try:
-      self.kuruczMagValues,self.kuruczModelMagLabels,self.kuruczFilterPars=self.readMagslist(os.path.join(path,filename1),135)
-      self.phoenixMagValues,self.phoenixModelMagLabels,self.phoenixFilterPars=self.readMagslist(os.path.join(path,filename2),114)
-      self.blackbodyMagValues,self.blackbodyModelMagLabels,self.blackbodyFilterPars=self.readMagslist(os.path.join(path,filename3),135)
-      if self.kuruczMagValues is None or self.phoenixMagValues is None or self.blackbodyMagValues is None:
+      self.kuruczMagValues,self.kuruczModelMagLabels,self.kuruczFilterPars=self.readMagslist(os.path.join(path,filename1),142)
+      self.phoenixMagValues,self.phoenixModelMagLabels,self.phoenixFilterPars=self.readMagslist(os.path.join(path,filename2),121)
+      self.blackbodyMagValues,self.blackbodyModelMagLabels,self.blackbodyFilterPars=self.readMagslist(os.path.join(path,filename3),142)
+      self.boszMagValues,self.boszModelMagLabels,self.boszFilterPars=self.readMagslist(os.path.join(path,filename4),142)
+      if self.boszMagValues is None or self.kuruczMagValues is None or self.phoenixMagValues is None or self.blackbodyMagValues is None:
         return False
       return True
     except:
@@ -412,7 +454,7 @@ class magConGUI():
     if not self.haveData:
       self.putMessage('Error: read in data first.\n',self.messageText)
       return
-    self.fitResults=[None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None]
+    self.fitResults=[None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None]
     filter1=self.mag1box.get()
     filter2=self.mag2box.get()
     filter3=self.mag3box.get()
@@ -430,7 +472,7 @@ class magConGUI():
     else:
       self.ylabel[1]=filter2+' - '+filter3
     ndatapoints=len(self.xdata[0])
-    self.jwstMags=numpy.zeros((ndatapoints,52),dtype=numpy.float32)
+    self.jwstMags=numpy.zeros((ndatapoints,59),dtype=numpy.float32)
     self.yopt=yopt
     norder=int(self.fitOrder.get())
     self.fit1(magopt,setopt,yopt,norder,mopt1,mopt2,mopt3,mopt4,True)
@@ -440,8 +482,8 @@ class magConGUI():
     self.dataLimits[2,1]=ymin
     self.dataLimits[3,1]=ymax
     self.haveTransformation=True
-    self.transformedNIRISSMags=numpy.zeros((ndatapoints,52),dtype=numpy.float32)
-    self.nirissInds=[mopt1,mopt2,mopt3,mopt4]
+    self.transformedJWSTMags=numpy.zeros((ndatapoints,50),dtype=numpy.float32)
+    self.jwstInds=[mopt1,mopt2,mopt3,mopt4]
     if yopt == 1:
       self.xdata[2]=numpy.copy(self.xdata[0])
       self.ydata[2]=numpy.copy(self.jwstMags[:,mopt3])
@@ -492,14 +534,24 @@ class magConGUI():
           mopt3=i
         if filter4 in self.blackbodyModelMagLabels[i]:
           mopt4=i
+    if setopt == 3:
+      for i in range(len(self.boszModelMagLabels)):
+        if filter1 in self.boszModelMagLabels[i]:
+          mopt1=i
+        if filter2 in self.boszModelMagLabels[i]:
+          mopt2=i
+        if filter3 in self.boszModelMagLabels[i]:
+          mopt3=i
+        if filter4 in self.boszModelMagLabels[i]:
+          mopt4=i
     return mopt1,mopt2,mopt3,mopt4
 
   def doFit(self,x1,y1,y2,n,yopt,norder,interactive):
-# case 1:  something like J - K vs J, do J -K to J - NIRISS filter
+# case 1:  something like J - K vs J, do J -K to J - JWST filter
       if yopt == 0:
         self.modelCol1=x1-y1
         self.modelCol2=x1-y2
-# case2: something like B - V vs V, do B - V to V - NIRISS filter
+# case2: something like B - V vs V, do B - V to V - JWST filter
       else:
         self.modelCol1=x1-y1
         self.modelCol2=y1-y2
@@ -631,7 +683,7 @@ class magConGUI():
       xmax=numpy.max(self.xdata[ind])+0.5
       delx=(xmax-xmin)/1000.
       xmodel=numpy.arange(xmin,xmax,delx)
-      ymodel=legendre.legval(xmodel,self.fitResults[self.nirissInds[2]])
+      ymodel=legendre.legval(xmodel,self.fitResults[self.jwstInds[2]])
       self.subplotList[ind].plot(xmodel,ymodel,color='cyan')
     if ind == 2:
       self.subplotList[ind].plot(self.xdata[ind],self.ydata[ind],'o',markersize=1.,color='blue')
@@ -645,17 +697,38 @@ class magConGUI():
 
   def altPlot(self):
     self.subplotList[1].clear()
-    xd1=self.kuruczMagValues[:,self.nirissInds[0]]-self.kuruczMagValues[:,self.nirissInds[1]]
-    if self.yopt == 0:
-      yd1=self.kuruczMagValues[:,self.nirissInds[0]]-self.kuruczMagValues[:,self.nirissInds[3]]
-    else:
-      yd1=self.kuruczMagValues[:,self.nirissInds[1]]-self.kuruczMagValues[:,self.nirissInds[3]]
+    ind=self.setOption.get()
+    if ind == 0:
+      xd1=self.kuruczMagValues[:,self.jwstInds[0]]-self.kuruczMagValues[:,self.jwstInds[1]]
+      if self.yopt == 0:
+        yd1=self.kuruczMagValues[:,self.jwstInds[0]]-self.kuruczMagValues[:,self.jwstInds[3]]
+      else:
+        yd1=self.kuruczMagValues[:,self.jwstInds[1]]-self.kuruczMagValues[:,self.jwstInds[3]]
+    if ind == 1:
+      xd1=self.phoenixMagValues[:,self.jwstInds[0]]-self.phoenixMagValues[:,self.jwstInds[1]]
+      if self.yopt == 0:
+        yd1=self.phoenixMagValues[:,self.jwstInds[0]]-self.phoenixMagValues[:,self.jwstInds[3]]
+      else:
+        yd1=self.phoenixMagValues[:,self.jwstInds[1]]-self.phoenixMagValues[:,self.jwstInds[3]]
+    if ind == 2:
+      xd1=self.blackbodyMagValues[:,self.jwstInds[0]]-self.blackbodyMagValues[:,self.jwstInds[1]]
+      if self.yopt == 0:
+        yd1=self.blackbodyMagValues[:,self.jwstInds[0]]-self.blackbodyMagValues[:,self.jwstInds[3]]
+      else:
+        yd1=self.blackbodyMagValues[:,self.jwstInds[1]]-self.blackbodyMagValues[:,self.jwstInds[3]]
+    if ind == 3:
+      xd1=self.boszMagValues[:,self.nirissInds[0]]-self.boszMagValues[:,self.nirissInds[1]]
+      if self.yopt == 0:
+        yd1=self.boszMagValues[:,self.nirissInds[0]]-self.boszMagValues[:,self.nirissInds[3]]
+      else:
+        yd1=self.boszMagValues[:,self.nirissInds[1]]-self.boszMagValues[:,self.nirissInds[3]]
     self.subplotList[1].plot(xd1,yd1,'o',markersize=5.,color='red')
     xmin=numpy.min(xd1)-0.5
     xmax=numpy.max(xd1)+0.5
     delx=(xmax-xmin)/1000.
     xmodel=numpy.arange(xmin,xmax,delx)
-    ymodel=legendre.legval(xmodel,self.fitResults[self.nirissInds[3]])
+    ymodel=legendre.legval(xmodel,self.fitResults[self.jwstInds[3]])
+    self.subplotList[1].plot(xmodel,ymodel,color='cyan')
     self.subplotList[1].set_xlabel(self.xlabel[1])
     filter1=self.mag1box.get()
     filter2=self.mag2box.get()
@@ -663,7 +736,6 @@ class magConGUI():
     filter4=self.mag4box.get()
     yl1=filter1+' - '+filter4
     self.subplotList[1].set_ylabel(yl1)
-    self.subplotList[1].plot(xmodel,ymodel,color='cyan')
     self.canvasList[1].show()
   
   def inverty(self):
@@ -735,7 +807,7 @@ class magConGUI():
   def makePNG(self):
     if not self.haveData:
       return
-    outfile=tkFileDialog.asksaveasfilename(filetypes=[('postscript','*.ps')])
+    outfile=tkFileDialog.asksaveasfilename(filetypes=[('PNG','*.png')])
     if isinstance(outfile,basestring) and outfile != '':
       self.mplfigList[self.plotOption-1].savefig(outfile,format="PNG")
 
@@ -771,7 +843,7 @@ class magConGUI():
     self.haveTransformation=False
     ravalues=None
     decvalues=None
-    filename=tkFileDialog.askopenfilename(filetypes=[('data files','*.data'),('data files','*.dat'),('data files','*.txt'),('data files','*.out'),('fits files','*.fits'),('All files','*')])
+    filename=tkFileDialog.askopenfilename(filetypes=[('data files','*.data'),('data files','*.dat'),('data files','*.txt'),('data files','*.out'),('data files','*.tbl'),('fits files','*.fits'),('All files','*')])
     if isinstance(filename,type('string')):
       if '.fits' in filename:
         hdulist=fits.open(filename)
@@ -792,7 +864,7 @@ class magConGUI():
           hdulist.close()
         except:
           hdulist.close()
-          s1='Error trying to read columns %i and %i in file %s.\nPlease check your inputs.' % (xindex,yindex,filename)
+          s1='Error trying to read columns %i and %i in file %s.\nPlease check your inputs.\n' % (xindex,yindex,filename)
           self.putMessage(s1,self.messageText)
           return
       else:
@@ -804,7 +876,7 @@ class magConGUI():
             indata1=numpy.loadtxt(filename,usecols=(xindex,),comments=['#','\\','|'])
             indata2=numpy.loadtxt(filename,usecols=(yindex,),comments=['#','\\','|'])
           except:
-            s1='Error trying to read columns %i and %i in file %s.\nPlease chec your inputs.' % (xindex,yindex,filename)
+            s1='Error trying to read columns %i and %i in file %s.\nPlease check your inputs.\n' % (xindex,yindex,filename)
             self.putMessage(s1,self.messageText)
             return
         if raindex >= 0 and decindex >= 0:
@@ -891,13 +963,13 @@ class magConGUI():
       try:
         outfile=open(outfilename,'w')
         if self.yopt == 0:
-          for n in range(52):
+          for n in range(59):
             self.writeParams(self.fitResults[n],jwstnames[n],n,outfile)
         if self.yopt == 1:
-          self.writeParams(self.fitResults[self.nirissinds[2]],jwstnames[self.nirissInds[2]],self.nirissInds[n],outfile)
+          self.writeParams(self.fitResults[self.jwstInds[2]],jwstnames[self.jwstInds[2]],self.jwstInds[n],outfile)
         if self.yopt == 2:
-          self.writeParams(self.fitResults[self.nirissinds[2]],jwstnames[self.nirissInds[2]],self.nirissInds[2],outfile)
-          self.writeParams(self.fitResults[self.nirissinds[3]],jwstnames[self.nirissInds[3]],self.nirissInds[3],outfile)
+          self.writeParams(self.fitResults[self.jwstInds[2]],jwstnames[self.jwstInds[2]],self.jwstInds[2],outfile)
+          self.writeParams(self.fitResults[self.jwstInds[3]],jwstnames[self.jwstInds[3]],self.jwstInds[3],outfile)
         outfile.close()
       except:
         self.messageText.insert(Tk.END,"Error writing file: "+outfilename+"\n")
@@ -906,9 +978,9 @@ class magConGUI():
   def writeParams(self,fitvalues,filtername,n,outfile):
     print("# Legendre polynomial fit for filter %s" % (filtername),file=outfile)
     if self.setOption.get() == 0 | self.setOption.get() == 2:
-      label=self.kuruczModelMagLabels[self.nirissInds[0]]+' - '+filtername
+      label=self.kuruczModelMagLabels[self.jwstInds[0]]+' - '+filtername
     else:
-      label=self.phoenixModelMagLabels[self.nirissInds[0]]+' - '+filtername
+      label=self.phoenixModelMagLabels[self.jwstInds[0]]+' - '+filtername
     print("# colour 1 (x): %s " % (self.xlabel[1]), file=outfile)
     print("# colour 2 (y): %s " % (label), file=outfile)
     print("# ",file=outfile)
@@ -941,11 +1013,11 @@ class magConGUI():
 
   def fit1(self,magopt,setopt,yopt,norder,mopt1,mopt2,mopt3,mopt4,interactive):
     ndatapoints=len(self.xdata[0])
-    self.jwstMags=numpy.zeros((ndatapoints,52),dtype=numpy.float32)
+    self.jwstMags=numpy.zeros((ndatapoints,59),dtype=numpy.float32)
     self.yopt=yopt
     if setopt == 0:
       if magopt == 0:
-        for n in range(52):
+        for n in range(59):
           self.doFit(self.kuruczMagValues[:,mopt1],self.kuruczMagValues[:,mopt2],self.kuruczMagValues[:,n],n,yopt,norder,interactive)
       if magopt == 1:
         self.doFit(self.kuruczMagValues[:,mopt1],self.kuruczMagValues[:,mopt2],self.kuruczMagValues[:,mopt3],mopt3,yopt,norder,interactive)
@@ -959,7 +1031,7 @@ class magConGUI():
         self.ydata[1]=self.kuruczMagValues[:,mopt2]-self.kuruczMagValues[:,mopt3]
     if setopt == 1:
       if magopt == 0:
-        for n in range(52):
+        for n in range(59):
           self.doFit(self.phoenixMagValues[:,mopt1],self.phoenixMagValues[:,mopt2],self.phoenixMagValues[:,n],n,yopt,norder,interactive)
       if magopt == 1:
         self.doFit(self.phoenixMagValues[:,mopt1],self.phoenixMagValues[:,mopt2],self.phoenixMagValues[:,mopt3],mopt3,yopt,norder,interactive)
@@ -970,7 +1042,7 @@ class magConGUI():
       self.ydata[1]=self.phoenixMagValues[:,mopt1]-self.phoenixMagValues[:,mopt3]
     if setopt == 2:
       if magopt == 0:
-        for n in range(52):
+        for n in range(59):
           self.doFit(self.blackbodyMagValues[:,mopt1],self.blackbodyMagValues[:,mopt2],self.blackbodyMagValues[:,n],n,yopt,norder,interactive)
       if magopt == 1:
         self.doFit(self.blackbodyMagValues[:,mopt1],self.blackbodyMagValues[:,mopt2],self.blackbodyMagValues[:,mopt3],mopt3,yopt,norder,interactive)
@@ -979,23 +1051,39 @@ class magConGUI():
         self.doFit(self.blackbodyMagValues[:,mopt1],self.blackbodyMagValues[:,mopt2],self.blackbodyMagValues[:,mopt4],mopt4,yopt,norder,interactive)
       self.xdata[1]=self.blackbodyMagValues[:,mopt1]-self.blackbodyMagValues[:,mopt2]
       self.ydata[1]=self.blackbodyMagValues[:,mopt1]-self.blackbodyMagValues[:,mopt3]
+    if setopt == 3:
+      if magopt == 0:
+        for n in range(12):
+          self.doFit(self.boszMagValues[:,mopt1],self.boszMagValues[:,mopt2],self.boszMagValues[:,n],n,yopt,norder,interactive)
+      if magopt == 1:
+        self.doFit(self.boszMagValues[:,mopt1],self.boszMagValues[:,mopt2],self.boszMagValues[:,mopt3],mopt3,yopt,norder,interactive)
+      if magopt == 2:
+        self.doFit(self.boszMagValues[:,mopt1],self.boszMagValues[:,mopt2],self.boszMagValues[:,mopt3],mopt3,yopt,norder,interactive)
+        self.doFit(self.boszMagValues[:,mopt1],self.boszMagValues[:,mopt2],self.boszMagValues[:,mopt4],mopt4,yopt,norder,interactive)
+      self.xdata[1]=self.boszMagValues[:,mopt1]-self.boszMagValues[:,mopt2]
+      self.ydata[1]=self.boszMagValues[:,mopt1]-self.boszMagValues[:,mopt3]
     
   def autoTransform(self,parameters):
     try:
       if parameters['Output_Filter_Values']['modelset'] == 'Kurucz':
         setopt=0
-        self.kuruczMagValues,self.kuruczModelMagLabels,self.kuruczFilterPars=self.readMagslist(os.path.join(path,'magslist_old_kurucz.new'),135)
+        self.kuruczMagValues,self.kuruczModelMagLabels,self.kuruczFilterPars=self.readMagslist(os.path.join(path,'magslist_old_kurucz.new'),142)
         if self.kuruczMagValues is None:
           self.exit()
       if parameters['Output_Filter_Values']['modelset'] == 'Phoenix':
         setopt=1
-        self.phoenixMagValues,self.phoenixModelMagLabels,self.phoenixFilterPars=self.readMagslist(os.path.join(path,'magslist_phoenix_grid.new'),114)
+        self.phoenixMagValues,self.phoenixModelMagLabels,self.phoenixFilterPars=self.readMagslist(os.path.join(path,'magslist_phoenix_grid.new'),121)
         if self.phoenixMagValues is None:
           self.exit()
       if parameters['Output_Filter_Values']['modelset'] == 'blackbody':
         setopt=2
-        self.blackbodyMagValues,self.blackbodyMagLabels,self.blackbodyFilterPars=self.readMagslist(os.path.join(path,'magslist_backbody.new'),135)
+        self.blackbodyMagValues,self.blackbodyMagLabels,self.blackbodyFilterPars=self.readMagslist(os.path.join(path,'magslist_backbody.new'),142)
         if self.blackbodyMagValues is None:
+          self.exit()
+      if parameters['Output_Filter_Values']['modelset'] == 'BOSZ':
+        setopt=3
+        self.boszMagValues,self.boszModelMagLabels,self.boszFilterPars=self.readMagslist(os.path.join(path,'magslist_bosz_normal.new'),142)
+        if self.boszMagValues is None:
           self.exit()
       if parameters['Input_Magnitude_Parameters']['column1type'] == 'magnitude':
         opt1=0
@@ -1007,15 +1095,15 @@ class magConGUI():
         opt2=1
       filter1=parameters['Input_Magnitude_Parameters']['filter1'].replace('_',' ')
       filter2=parameters['Input_Magnitude_Parameters']['filter2'].replace('_',' ')
-      filter3=parameters['Output_Filter_Values']['niriss1'].replace('_',' ')
-      filter4=parameters['Output_Filter_Values']['niriss2'].replace('_',' ')
+      filter3=parameters['Output_Filter_Values']['jwst1'].replace('_',' ')
+      filter4=parameters['Output_Filter_Values']['jwst2'].replace('_',' ')
       norder=int(parameters['Output_Filter_Values']['fitorder'])
       if norder < 2:
         sys.exit()
       mopt1,mopt2,mopt3,mopt4=self.matchFilter(setopt,filter1,filter2,filter3,filter4)
       if mopt1 < 0 or mopt2 < 0 or mopt3 < 0 or mopt4 < 0:
         sys.exit()
-      self.nirissInds=[mopt1,mopt2,mopt3,mopt4]
+      self.jwstInds=[mopt1,mopt2,mopt3,mopt4]
       xindex=int(parameters['Input_Magnitude_Parameters']['column1'])-1
       yindex=int(parameters['Input_Magnitude_Parameters']['column2'])-1
       raindex=int(parameters['Input_Magnitude_Parameters']['racolumn'])-1
@@ -1061,7 +1149,7 @@ class magConGUI():
       else:
         magopt=2
       ndatapoints=len(self.xdata[0])
-      self.jwstMags=numpy.zeros((ndatapoints,52),dtype=numpy.float32)
+      self.jwstMags=numpy.zeros((ndatapoints,59),dtype=numpy.float32)
       self.fit1(magopt,setopt,yaxis,norder,mopt1,mopt2,mopt3,mopt4,False)
       outfilename=parameters['Output_Filter_Values']['outfilename']
       self.ravalues=ravalues
@@ -1072,25 +1160,52 @@ class magConGUI():
       xmax=numpy.max(self.xdata[1])+0.5
       delx=(xmax-xmin)/1000.
       xmodel=numpy.arange(xmin,xmax,delx)
-      setnames=['kurucz','phoenix','blackbody']
+      setnames=['kurucz','phoenix','blackbody','bosz']
       for n in range(2):
         if n == yaxis:
-          ymodel=legendre.legval(xmodel,self.fitResults[self.nirissInds[2]])
+          ymodel=legendre.legval(xmodel,self.fitResults[self.jwstInds[2]])
           matplotlib.pyplot.plot(self.xdata[1],self.ydata[1],'o',markersize=1.,color='red')
         else:
-          ymodel=legendre.legval(xmodel,self.fitResults[self.nirissInds[3]])
+          if setopt == 0:
+            xd1=self.kuruczMagValues[:,mopt1]-self.kuruczMagValues[:,mopt2]
+            if yaxis == 0:
+              yd1=self.kuruczMagValues[:,mopt1]-self.kuruczMagValues[:,mopt4]
+            else:
+              yd1=self.kuruczMagValues[:,mopt2]-self.kuruczMagValues[:,mopt4]
+            matplotlib.pyplot.plot(xd1,yd1,'o',markersize=1.,color='red')
+          if setopt == 1:
+            xd1=self.phoenixMagValues[:,mopt1]-self.phoenixMagValues[:,mopt2]
+            if yaxis == 0:
+              yd1=self.phoenixMagValues[:,mopt1]-self.phoenixMagValues[:,mopt4]
+            else:
+              yd1=self.phoenixMagValues[:,mopt2]-self.phoenixMagValues[:,mopt4]
+            matplotlib.pyplot.plot(xd1,yd1,'o',markersize=1.,color='red')
+          if setopt == 2:
+            xd1=self.blackbodyMagValues[:,mopt1]-self.blackbodyMagValues[:,mopt2]
+            if yaxis == 0:
+              yd1=self.blackbodyMagValues[:,mopt1]-self.blackbodyMagValues[:,mopt4]
+            else:
+              yd1=self.blackbodyMagValues[:,mopt2]-self.blackbodyMagValues[:,mopt4]
+            matplotlib.pyplot.plot(xd1,yd1,'o',markersize=1.,color='red')
+          if setopt == 4:
+            xd1=self.boszMagValues[:,mopt1]-self.boszMagValues[:,mopt2]
+            if yaxis == 0:
+              yd1=self.boszMagValues[:,mopt1]-self.boszMagValues[:,mopt4]
+            else:
+              yd1=self.boszMagValues[:,mopt2]-self.boszMagValues[:,mopt4]
+            matplotlib.pyplot.plot(xd1,yd1,'o',markersize=1.,color='red')
+          ymodel=legendre.legval(xmodel,self.fitResults[self.jwstInds[3]])
           xd1=self.kuruczMagValues[:,mopt1]-self.kuruczMagValues[:,mopt2]
           if yaxis == 0:
             yd1=self.kuruczMagValues[:,mopt1]-self.kuruczMagValues[:,mopt4]
           else:
             yd1=self.kuruczMagValues[:,mopt2]-self.kuruczMagValues[:,mopt4]
-          matplotlib.pyplot.plot(xd1,yd1,'o',markersize=1.,color='red')
         matplotlib.pyplot.plot(xmodel,ymodel,color='cyan')
         if n == 0:
-          matplotlib.pyplot.ylabel(ylabel+' - NIRISS '+filter3)
+          matplotlib.pyplot.ylabel(ylabel+' - JWST '+filter3)
           figname='transformation '+xlabel+' to '+ylabel+' - '+filter3+' '+setnames[setopt]+'.png'
         else:
-          matplotlib.pyplot.ylabel(ylabel+' - NIRISS '+filter4)
+          matplotlib.pyplot.ylabel(ylabel+' - JWST '+filter4)
           figname='transformation '+xlabel+' to '+ylabel+' - '+filter4+' '+setnames[setopt]+'.png'
         matplotlib.pyplot.xlabel(xlabel)
         figname=figname.replace(' ','_')
@@ -1102,6 +1217,8 @@ class magConGUI():
       sys.exit()
     
 def parseArguments(argv):
+  sectionlist=['Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Input_Magnitude_Parameters','Output_Filter_Values','Output_Filter_Values','Output_Filter_Values','Output_Filter_Values','Output_Filter_Values']
+  keylist=['filter1','filter2','column1','column2','column1type','column2type','yvalue','datafile','racolumn','deccolumn','jwst1','jwst2','modelset','fitorder','outfilename']
   try:
     filename=argv[-1]
     if '.cfg' in filename: 
@@ -1127,7 +1244,6 @@ def main(argv):
     root=None
     x=magConGUI()
     x.autoTransform(parameters)
-    # sys.exit()
       
 if __name__ == "__main__":
   main(sys.argv)
