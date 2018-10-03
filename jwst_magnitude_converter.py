@@ -1229,11 +1229,13 @@ def parseArguments(argv):
       return config
     else:
       return None
-  except:  	
-    return None
-      
+  except KeyError:
+    raise RuntimeError('Failed to parse {}'.format(filename))
+
 def main(argv):
+  # print('Calling main function')
   parameters=parseArguments(argv)
+  print('Parameters', parameters)
   if parameters is None:
     root=Tk.Tk()
     root.title("JWST Magnitude Simulation Tool")
