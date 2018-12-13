@@ -23,7 +23,7 @@ import matplotlib.pyplot as pyplot
 import math
 import numpy 
 import numpy.polynomial.legendre as legendre
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import astropy.io.fits as fits
 from configobj import ConfigObj
