@@ -78,6 +78,7 @@ kuruczfilternames=["Sloan u  ","Sloan g  ","Sloan r  ","Sloan i  ",
 "MIRI F2100W ","MIRI F2550W ",'NIRSpec F110W','NIRSpec F140X',
 'NIRSpec Clear','NIRSpec F070LP','NIRSec F100LP','NIRSpec F170LP',
 'NIRSPec F290LP','Guider 1','Guider 2']
+
 phoenixfilternames=['Sloan u ','Sloan g ','Sloan r ','Sloan i ','Sloan z ',
 'Bessel U ','Bessel B ','Bessel V ','Bessel/Cousins R ','Bessel/Cousins I ',
 'Johnson U ','Johnson B ','Johnson V ','Johnson R ','Johnson I ','Johnson J ',
@@ -106,6 +107,7 @@ phoenixfilternames=['Sloan u ','Sloan g ','Sloan r ','Sloan i ','Sloan z ',
 "MIRI F2100W ","MIRI F2550W ",'NIRSpec F110W','NIRSpec F140X',
 'NIRSpec Clear','NIRSpec F070LP','NIRSec F100LP','NIRSpec F170LP',
 'NIRSPec F290LP','Guider 1','Guider 2']
+
 jwstnames=["NIRISS F090W ","NIRISS F115W ","NIRISS F140M ","NIRISS F150W ",
 "NIRISS F158M ","NIRISS F200W ","NIRISS F277W ","NIRISS F356W ",
 "NIRISS F380M ","NIRISS F430M ","NIRISS F444W ","NIRISS F480M ",
@@ -119,7 +121,9 @@ jwstnames=["NIRISS F090W ","NIRISS F115W ","NIRISS F140M ","NIRISS F150W ",
 "NIRCam F444W ","NIRCam F460M ","NIRCam F466N ","NIRCam F470N ",
 "NIRCam F480M ","MIRI F560W ","MIRI F770W ","MIRI F1000W ",
 "MIRI F1280W ","MIRI F1130W ","MIRI F1500W ","MIRI F1800W ",
-"MIRI F2100W ","MIRI F2550W "]
+"MIRI F2100W ","MIRI F2550W ",
+'NIRSpec F110W', 'NIRSpec F140X', 'NIRSpec Clear',
+'NIRSpec F070LP','NIRSec F100LP','NIRSpec F170LP', 'NIRSPec F290LP']
 
 class magConGUI():
   def __init__(self,parent=None,**args):
